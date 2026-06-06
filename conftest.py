@@ -7,7 +7,7 @@ import socket
 import pytest
 
 sys.path.insert(0, os.path.dirname(__file__))
-from config.env_config import GET_API_BASE_URL, POST_API_BASE_URL, AUTH_TOKEN, EXTRA_HEADERS
+from config.env_config import GET_API_BASE_URL, POST_API_BASE_URL, AUTH_TOKEN, EXTRA_HEADERS, ENVELOPE_API_BASE_URL, TOKEN_URL
 
 MOCK_DIR = os.path.join(os.path.dirname(__file__), "mock_apis")
 
@@ -46,6 +46,8 @@ def start_mock_apis():
     # Kill any stale processes on these ports first
     kill_port(5001)
     kill_port(5002)
+    kill_port(5003)
+    kill_port(5004)
     time.sleep(1)
 
     get_proc = subprocess.Popen(
@@ -58,14 +60,30 @@ def start_mock_apis():
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
+    envelope_proc = subprocess.Popen(
+        [sys.executable, os.path.join(MOCK_DIR, "envelope_api.py")],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    token_proc = subprocess.Popen(
+        [sys.executable, os.path.join(MOCK_DIR, "token_api.py")],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
 
-    # Wait until both ports are ready
+    # Wait until all ports are ready
     wait_for_port(5001)
     wait_for_port(5002)
+    wait_for_port(5003)
+    wait_for_port(5004)
 
     yield
 
     get_proc.terminate()
     post_proc.terminate()
+    envelope_proc.terminate()
+    token_proc.terminate()
     kill_port(5001)
     kill_port(5002)
+    kill_port(5003)
+    kill_port(5004)

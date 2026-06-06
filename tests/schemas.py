@@ -24,3 +24,16 @@ ERROR_SCHEMA = {
         "error": {"type": "string"},
     },
 }
+
+ENVELOPE_SCHEMA = {
+    "type": "object",
+    "required": ["envelopeNumber", "clientId", "status", "subject", "sentDate"],
+    "properties": {
+        "envelopeNumber": {"type": "integer"},
+        "clientId":       {"type": "integer"},
+        "status":         {"type": "string"},
+        "subject":        {"type": "string"},
+        "sentDate":       {"type": "string"},
+        "recipients":     {"type": "array", "items": {"type": "string"}},
+    },
+}

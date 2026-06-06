@@ -3,7 +3,7 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-VALID_TOKEN = "test-token-123"
+VALID_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.mock.token"
 
 ENVELOPES = [
     {
