@@ -3,6 +3,7 @@ import subprocess
 import time
 import sys
 import os
+import config.env_config as env_config
 
 _get_proc = None
 _post_proc = None
@@ -25,6 +26,7 @@ def before_all(context):
     )
     # Give Flask a moment to start — increased to 3s for slower machines
     time.sleep(3)
+    context.env = env_config
 
 
 def after_all(context):

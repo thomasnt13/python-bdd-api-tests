@@ -3,16 +3,26 @@ import requests
 from behave import given, when, then
 
 
+def _resolve(context, key):
+    """Resolve a feature-file string against env_config, or return it as-is."""
+    return getattr(context.env, key, key)
+
+
 # ── Given ────────────────────────────────────────────────────────────────────
 
-@given('the GET API is running at "{base_url}"')
-def step_set_get_base_url(context, base_url):
-    context.base_url = base_url
+@given('the GET API is running at "{base_url_key}"')
+def step_set_get_base_url(context, base_url_key):
+    context.base_url = _resolve(context, base_url_key)
 
 
-@given('the POST API is running at "{base_url}"')
-def step_set_post_base_url(context, base_url):
-    context.base_url = base_url
+@given('the POST API is running at "{base_url_key}"')
+def step_set_post_base_url(context, base_url_key):
+    context.base_url = _resolve(context, base_url_key)
+
+
+@given('I have a valid auth token "{token_key}"')
+def step_set_auth_token(context, token_key):
+    context.auth_token = _resolve(context, token_key)
 
 
 # ── When ─────────────────────────────────────────────────────────────────────
@@ -20,6 +30,28 @@ def step_set_post_base_url(context, base_url):
 @when('I send a GET request to "{path}"')
 def step_send_get(context, path):
     context.response = requests.get(f"{context.base_url}{path}", timeout=5)
+
+
+@when('I send a GET request to "{path}" without auth')
+def step_send_get_no_auth(context, path):
+    context.response = requests.get(f"{context.base_url}{path}", timeout=5)
+
+
+@when('I send an authenticated GET request to "{path}"')
+def step_send_authenticated_get(context, path):
+    headers = {"Authorization": f"Bearer {context.auth_token}"}
+    headers.update(getattr(context.env, "EXTRA_HEADERS", {}))
+    context.response = requests.get(
+        f"{context.base_url}{path}", headers=headers, timeout=5
+    )
+
+
+@when('I send an authenticated GET request to "{path}" with token "{token}"')
+def step_send_authenticated_get_with_token(context, path, token):
+    headers = {"Authorization": f"Bearer {token}"}
+    context.response = requests.get(
+        f"{context.base_url}{path}", headers=headers, timeout=5
+    )
 
 
 @when('I send a POST request to "{path}" with body')
