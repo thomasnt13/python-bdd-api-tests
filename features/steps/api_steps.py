@@ -25,6 +25,25 @@ def step_set_auth_token(context, token_key):
     context.auth_token = _resolve(context, token_key)
 
 
+@given('I obtain an access token using client credentials')
+def step_obtain_token(context):
+    env = context.env
+    response = requests.post(
+        env.TOKEN_URL,
+        data={
+            "grant_type":    "client_credentials",
+            "client_id":     env.CLIENT_ID,
+            "client_secret": env.CLIENT_SECRET,
+            "audience":      env.AUDIENCE,
+        },
+        timeout=5,
+    )
+    assert response.status_code == 200, (
+        f"Token request failed: {response.status_code} {response.text}"
+    )
+    context.auth_token = response.json()["access_token"]
+
+
 # ── When ─────────────────────────────────────────────────────────────────────
 
 @when('I send a GET request to "{path}"')
@@ -32,7 +51,7 @@ def step_send_get(context, path):
     context.response = requests.get(f"{context.base_url}{path}", timeout=5)
 
 
-@when('I send a GET request to "{path}" without auth')
+@when('I make an unauthenticated GET request to "{path}"')
 def step_send_get_no_auth(context, path):
     context.response = requests.get(f"{context.base_url}{path}", timeout=5)
 
@@ -46,8 +65,8 @@ def step_send_authenticated_get(context, path):
     )
 
 
-@when('I send an authenticated GET request to "{path}" with token "{token}"')
-def step_send_authenticated_get_with_token(context, path, token):
+@when('I make a GET request to "{path}" with invalid token "{token}"')
+def step_send_get_with_invalid_token(context, path, token):
     headers = {"Authorization": f"Bearer {token}"}
     context.response = requests.get(
         f"{context.base_url}{path}", headers=headers, timeout=5

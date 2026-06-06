@@ -45,18 +45,18 @@ Feature: GET Users API
   # ── Auth / Negative ───────────────────────────────────────────────────────
   @auth @regression
   Scenario: Get users without auth token returns 401
-    When I send a GET request to "/users" without auth
+    When I make an unauthenticated GET request to "/users"
     Then the response status code should be 401
     And the response body should contain "error"
 
   @auth @regression
   Scenario: Get users with invalid token returns 401
-    When I send an authenticated GET request to "/users" with token "bad-token"
+    When I make a GET request to "/users" with invalid token "bad-token"
     Then the response status code should be 401
     And the response body should contain "error"
 
   @auth @regression
   Scenario: Get specific user without auth token returns 401
-    When I send a GET request to "/users/1" without auth
+    When I make an unauthenticated GET request to "/users/1"
     Then the response status code should be 401
     And the response body should contain "error"

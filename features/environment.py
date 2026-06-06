@@ -7,12 +7,14 @@ import config.env_config as env_config
 
 _get_proc = None
 _post_proc = None
+_envelope_proc = None
+_token_proc = None
 
 MOCK_DIR = os.path.join(os.path.dirname(__file__), "..", "mock_apis")
 
 
 def before_all(context):
-    global _get_proc, _post_proc
+    global _get_proc, _post_proc, _envelope_proc, _token_proc
 
     _get_proc = subprocess.Popen(
         [sys.executable, os.path.join(MOCK_DIR, "get_api.py")],
@@ -21,6 +23,16 @@ def before_all(context):
     )
     _post_proc = subprocess.Popen(
         [sys.executable, os.path.join(MOCK_DIR, "post_api.py")],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    _envelope_proc = subprocess.Popen(
+        [sys.executable, os.path.join(MOCK_DIR, "envelope_api.py")],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    _token_proc = subprocess.Popen(
+        [sys.executable, os.path.join(MOCK_DIR, "token_api.py")],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
@@ -34,3 +46,7 @@ def after_all(context):
         _get_proc.terminate()
     if _post_proc:
         _post_proc.terminate()
+    if _envelope_proc:
+        _envelope_proc.terminate()
+    if _token_proc:
+        _token_proc.terminate()
