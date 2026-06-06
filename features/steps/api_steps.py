@@ -28,16 +28,24 @@ def step_set_auth_token(context, token_key):
 @given('I obtain an access token using client credentials')
 def step_obtain_token(context):
     env = context.env
-    response = requests.post(
-        env.TOKEN_URL,
-        data={
-            "grant_type":    "client_credentials",
-            "client_id":     env.CLIENT_ID,
-            "client_secret": env.CLIENT_SECRET,
-            "audience":      env.AUDIENCE,
-        },
-        timeout=5,
-    )
+    token_url     = getattr(env, "TOKEN_URL",     None)
+    client_id     = getattr(env, "CLIENT_ID",     None)
+    client_secret = getattr(env, "CLIENT_SECRET", None)
+    audience      = getattr(env, "AUDIENCE",      None)
+
+    assert token_url, "TOKEN_URL is not set in env_config.py"
+    assert client_id, "CLIENT_ID is not set in env_config.py"
+    assert client_secret, "CLIENT_SECRET is not set in env_config.py"
+
+    data = {
+        "grant_type":    "client_credentials",
+        "client_id":     client_id,
+        "client_secret": client_secret,
+    }
+    if audience:
+        data["audience"] = audience
+
+    response = requests.post(token_url, data=data, timeout=5)
     assert response.status_code == 200, (
         f"Token request failed: {response.status_code} {response.text}"
     )
