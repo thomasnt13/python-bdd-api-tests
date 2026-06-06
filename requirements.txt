@@ -1,0 +1,20 @@
+# ── Test Runner ───────────────────────────────────────────────
+pytest==8.2.0
+pytest-bdd==7.2.0
+
+# ── Allure Reporting ──────────────────────────────────────────
+allure-pytest==2.13.5
+
+# ── HTTP Client ───────────────────────────────────────────────
+requests==2.31.0
+
+# ── Mock API Server ───────────────────────────────────────────
+flask==3.0.3
+
+# ── Schema Validation ─────────────────────────────────────────
+jsonschema==4.22.0
+
+# ── Database (Azure SQL Server) ───────────────────────────────
+# Requires ODBC Driver 18 for SQL Server installed on the machine
+# Download: https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server
+pyodbc==5.1.0

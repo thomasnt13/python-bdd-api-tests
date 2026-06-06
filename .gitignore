@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+
+# Reports (generated — don't commit results)
+reports/allure-results/
+reports/allure-report.html
+
+# Env / secrets
+config/db_config.py
+
+# VS artifacts
+*.tmp
+*.user
+.vs/
