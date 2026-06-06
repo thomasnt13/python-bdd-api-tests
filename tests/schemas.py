@@ -36,4 +36,5 @@ ENVELOPE_SCHEMA = {
         "sentDate":       {"type": "string"},
         "recipients":     {"type": "array", "items": {"type": "string"}},
     },
+    "additionalProperties": False,
 }

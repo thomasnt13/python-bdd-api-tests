@@ -12,8 +12,8 @@ ENVELOPE_API_BASE_URL = "http://localhost:5003"        # or your real envelope A
 
 # ── OAuth Token ───────────────────────────────────────────────────────────────
 TOKEN_URL     = "http://localhost:5004/oauth/token"    # or your real token endpoint
-CLIENT_ID     = "your-client-id"
-CLIENT_SECRET = "your-client-secret"
+CLIENT_ID     = "test-client-id"
+CLIENT_SECRET = "test-client-secret"
 AUDIENCE      = "https://api.example.com"              # optional — remove if not needed
 
 # ── Auth ──────────────────────────────────────────────────────────────────────

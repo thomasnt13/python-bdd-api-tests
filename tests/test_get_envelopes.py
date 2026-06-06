@@ -131,5 +131,7 @@ def check_field_value(context, key, value):
     with allure.step(f"Assert '{key}' == '{value}'"):
         body = context["response"].json()
         allure.attach(json.dumps(body, indent=2), name="Response Body", attachment_type=allure.attachment_type.JSON)
+        schema = ENVELOPE_SCHEMA if context["response"].status_code < 400 else ERROR_SCHEMA
+        validate_schema(body, schema, "ENVELOPE_SCHEMA" if context["response"].status_code < 400 else "ERROR_SCHEMA")
         assert key in body, f"Key '{key}' not found in response: {body}"
         assert str(body[key]) == value, f"Expected '{key}' == '{value}', got '{body[key]}'"
