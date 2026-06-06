@@ -7,8 +7,17 @@ from jsonschema import validate, ValidationError
 from pytest_bdd import scenarios, given, when, then, parsers
 from schemas import USER_SCHEMA, USER_LIST_SCHEMA, ERROR_SCHEMA
 from db_helper import fetch_user_by_id, validate_api_vs_db, DB_NOT_CONFIGURED
+from config.env_config import GET_API_BASE_URL, AUTH_TOKEN, EXTRA_HEADERS
 
 pytestmark = [pytest.mark.get_api]
+
+
+def resolve(value):
+    """Replace config placeholder strings with actual values."""
+    return {
+        "GET_API_BASE_URL": GET_API_BASE_URL,
+        "AUTH_TOKEN":       AUTH_TOKEN,
+    }.get(value, value)
 
 scenarios("../features/get_users.feature")
 
@@ -33,16 +42,18 @@ def validate_schema(body, schema, name):
 
 @given(parsers.parse('the GET API is running at "{base_url}"'))
 def set_base_url(context, base_url):
-    with allure.step(f"Set base URL to {base_url}"):
-        context["base_url"] = base_url
-        context["headers"] = {}
+    resolved = resolve(base_url)
+    with allure.step(f"Set base URL to {resolved}"):
+        context["base_url"] = resolved
+        context["headers"] = {**EXTRA_HEADERS}
 
 
 @given(parsers.parse('I have a valid auth token "{token}"'))
 def set_auth_token(context, token):
+    resolved = resolve(token)
     with allure.step("Set Authorization header"):
-        context["token"] = token
-        context["headers"]["Authorization"] = f"Bearer {token}"
+        context["token"] = resolved
+        context["headers"]["Authorization"] = f"Bearer {resolved}"
 
 
 # ── When ──────────────────────────────────────────────────────────────────────

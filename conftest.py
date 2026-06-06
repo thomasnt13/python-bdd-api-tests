@@ -6,6 +6,9 @@ import os
 import socket
 import pytest
 
+sys.path.insert(0, os.path.dirname(__file__))
+from config.env_config import GET_API_BASE_URL, POST_API_BASE_URL, AUTH_TOKEN, EXTRA_HEADERS
+
 MOCK_DIR = os.path.join(os.path.dirname(__file__), "mock_apis")
 
 

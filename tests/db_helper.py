@@ -8,7 +8,7 @@ import pyodbc
 import allure
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-from config.db_config import DB_CONFIG, USERS_TABLE
+from config.env_config import DB_CONFIG, USERS_TABLE
 
 
 DB_NOT_CONFIGURED = (

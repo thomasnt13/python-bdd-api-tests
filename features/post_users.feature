@@ -5,8 +5,8 @@ Feature: POST Users API
   So that they are persisted in the system
 
   Background:
-    Given the POST API is running at "http://localhost:5002"
-    And I have a valid auth token "test-token-123"
+    Given the POST API is running at "POST_API_BASE_URL"
+    And I have a valid auth token "AUTH_TOKEN"
 
   # ── Sanity ────────────────────────────────────────────────────────────────
   @sanity

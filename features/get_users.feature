@@ -5,8 +5,8 @@ Feature: GET Users API
   So that I can display it in my application
 
   Background:
-    Given the GET API is running at "http://localhost:5001"
-    And I have a valid auth token "test-token-123"
+    Given the GET API is running at "GET_API_BASE_URL"
+    And I have a valid auth token "AUTH_TOKEN"
 
   # ── Sanity ────────────────────────────────────────────────────────────────
   @sanity

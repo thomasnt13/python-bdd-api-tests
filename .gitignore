@@ -1,3 +1,8 @@
+# Virtual environment
+venv/
+.venv/
+env/
+
 # Python
 __pycache__/
 *.py[cod]
@@ -8,8 +13,9 @@ __pycache__/
 reports/allure-results/
 reports/allure-report.html
 
-# Env / secrets
+# Env / secrets — never commit real credentials
 config/db_config.py
+config/env_config.py
 
 # VS artifacts
 *.tmp
