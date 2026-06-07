@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "required": ["envelopeNumber", "clientId", "status"],
+  "properties": {
+    "envelopeNumber": { "type": "integer" },
+    "clientId":       { "type": "integer" },
+    "status":         { "type": "string", "enum": ["delivered", "pending"] }
+  }
+}

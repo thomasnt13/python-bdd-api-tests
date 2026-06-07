@@ -4,41 +4,49 @@ Feature: GET Envelope API
   I want to retrieve envelope data by client ID and envelope number
   So that I can display it in my application
 
-  Background:
-    Given the GET API is running at "ENVELOPE_API_BASE_URL"
-    And I obtain an access token using client credentials
-
   # ── Sanity ────────────────────────────────────────────────────────────────
   @sanity
-  Scenario: Get envelope by valid client ID and envelope number returns 200
-    When I send an authenticated GET request to "/clients/123/envelopes/456"
+  Scenario Outline: Retrieve a valid envelope successfully
+    When I request the envelope for client "<clientId>" and envelope "<envelopeNumber>"
     Then the response status code should be 200
+    And the response matches schema "envelope_schema"
+    And the envelope record should exist in the database
+    And the envelope response should match the database record
+
+    Examples:
+      | clientId | envelopeNumber | description              |
+      | 123      | 456            | delivered envelope       |
+      | 123      | 457            | pending envelope         |
+      | 456      | 789            | different client         |
 
   # ── Regression ────────────────────────────────────────────────────────────
   @regression
-  Scenario: Get envelope response contains expected fields
-    When I send an authenticated GET request to "/clients/123/envelopes/456"
-    Then the response status code should be 200
-    And the response body should contain "envelopeNumber"
-    And the response body should contain "clientId"
-
-  @regression
-  Scenario: Get envelope with invalid client ID returns 404
-    When I send an authenticated GET request to "/clients/999/envelopes/456"
+  Scenario Outline: Envelope not found returns 404
+    When I request the envelope for client "<clientId>" and envelope "<envelopeNumber>"
     Then the response status code should be 404
 
-  @regression
-  Scenario: Get envelope with invalid envelope number returns 404
-    When I send an authenticated GET request to "/clients/123/envelopes/999"
-    Then the response status code should be 404
+    Examples:
+      | clientId | envelopeNumber | description              |
+      | 999      | 456            | invalid client ID        |
+      | 123      | 999            | invalid envelope number  |
+      | 999      | 999            | both invalid             |
 
   # ── Auth / Negative ───────────────────────────────────────────────────────
   @auth @regression
-  Scenario: Get envelope without auth token returns 401
-    When I make an unauthenticated GET request to "/clients/123/envelopes/456"
+  Scenario Outline: Accessing envelope without valid auth returns 401
+    When I make an unauthenticated GET request to "/clients/<clientId>/envelopes/<envelopeNumber>"
     Then the response status code should be 401
 
+    Examples:
+      | clientId | envelopeNumber |
+      | 123      | 456            |
+
   @auth @regression
-  Scenario: Get envelope with invalid token returns 401
-    When I make a GET request to "/clients/123/envelopes/456" with invalid token "bad-token"
+  Scenario Outline: Accessing envelope with invalid token returns 401
+    When I make a GET request to "/clients/<clientId>/envelopes/<envelopeNumber>" with invalid token "<token>"
     Then the response status code should be 401
+
+    Examples:
+      | clientId | envelopeNumber | token        |
+      | 123      | 456            | bad-token    |
+      | 123      | 456            | expired-jwt  |

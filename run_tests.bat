@@ -1,11 +1,11 @@
 @echo off
-echo Installing dependencies...
-pip install -r requirements.txt
+echo Clearing old allure results...
+if exist reports\allure-results rmdir /s /q reports\allure-results
+mkdir reports\allure-results
 
-echo Running BDD tests with Allure formatter...
-behave
+echo Running envelope API tests...
+python -m behave features/get_envelopes.feature --no-capture -f allure_behave.formatter:AllureFormatter -o reports/allure-results
 
 echo.
-echo Allure results saved to: reports\allure-results\
-echo To view the report, run:
+echo Done. To view report run:
 echo   allure serve reports\allure-results

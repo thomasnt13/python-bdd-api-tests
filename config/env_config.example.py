@@ -42,4 +42,5 @@ DB_CONFIG = {
     "password": "your-azure-password",
     "driver":   "ODBC Driver 18 for SQL Server",
 }
-USERS_TABLE = "dbo.Users"
+USERS_TABLE     = "dbo.Users"
+ENVELOPES_TABLE = "dbo.Envelopes"   # update to your actual table name
