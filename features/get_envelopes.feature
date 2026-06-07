@@ -4,12 +4,12 @@ Feature: GET Envelope API
   I want to retrieve envelope data by client ID and envelope number
   So that I can display it in my application
 
-  # ── Sanity ────────────────────────────────────────────────────────────────
+  # ── Summary (includeDetails=false) ───────────────────────────────────────
   @sanity
-  Scenario Outline: Retrieve a valid envelope successfully
-    When I request the envelope for client "<clientId>" and envelope "<envelopeNumber>"
+  Scenario Outline: Retrieve envelope summary successfully
+    When I request the envelope for client "<clientId>" and envelope "<envelopeNumber>" with details "false"
     Then the response status code should be 200
-    And the response matches schema "envelope_schema"
+    And the response matches schema "envelope_schema_summary"
     And the envelope record should exist in the database
     And the envelope response should match the database record
 
@@ -19,10 +19,25 @@ Feature: GET Envelope API
       | 123      | 457            | pending envelope         |
       | 456      | 789            | different client         |
 
-  # ── Regression ────────────────────────────────────────────────────────────
+  # ── Detailed (includeDetails=true) ───────────────────────────────────────
+  @sanity
+  Scenario Outline: Retrieve envelope with full details successfully
+    When I request the envelope for client "<clientId>" and envelope "<envelopeNumber>" with details "true"
+    Then the response status code should be 200
+    And the response matches schema "envelope_schema_detailed"
+    And the envelope record should exist in the database
+    And the envelope response should match the database record
+
+    Examples:
+      | clientId | envelopeNumber | description              |
+      | 123      | 456            | delivered envelope       |
+      | 123      | 457            | pending envelope         |
+      | 456      | 789            | different client         |
+
+  # ── Not Found ─────────────────────────────────────────────────────────────
   @regression
   Scenario Outline: Envelope not found returns 404
-    When I request the envelope for client "<clientId>" and envelope "<envelopeNumber>"
+    When I request the envelope for client "<clientId>" and envelope "<envelopeNumber>" with details "false"
     Then the response status code should be 404
 
     Examples:

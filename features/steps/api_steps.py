@@ -92,14 +92,16 @@ def step_obtain_token(context):
 
 # ── When ─────────────────────────────────────────────────────────────────────
 
-@when('I request the envelope for client "{client_id}" and envelope "{envelope_number}"')
-def step_request_envelope(context, client_id, envelope_number):
+@when('I request the envelope for client "{client_id}" and envelope "{envelope_number}" with details "{include_details}"')
+def step_request_envelope(context, client_id, envelope_number, include_details):
     path = f"/clients/{client_id}/envelopes/{envelope_number}"
     url = f"{context.base_url}{path}"
+    params = {"includeDetails": include_details}
     headers = {"Authorization": f"Bearer {context.auth_token}"}
     headers.update(getattr(context.env, "EXTRA_HEADERS", {}))
     _attach_request(url, headers=headers)
-    context.response = requests.get(url, headers=headers, timeout=5)
+    allure.attach(f"includeDetails: {include_details}", name="Query Params", attachment_type=allure.attachment_type.TEXT)
+    context.response = requests.get(url, headers=headers, params=params, timeout=5)
     _attach_response(context.response)
 
 

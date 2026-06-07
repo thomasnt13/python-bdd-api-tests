@@ -5,6 +5,10 @@ DO NOT commit env_config.py to source control.
     cp config/env_config.example.py config/env_config.py
 """
 
+# ── Mock Toggle ──────────────────────────────────────────────────────────────
+# Set to False when running against real APIs (no Flask mock servers needed)
+USE_MOCKS = True
+
 # ── API Base URLs ─────────────────────────────────────────────────────────────
 GET_API_BASE_URL      = "http://localhost:5001"
 POST_API_BASE_URL     = "http://localhost:5002"

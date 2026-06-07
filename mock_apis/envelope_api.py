@@ -7,30 +7,30 @@ VALID_TOKEN = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.mock.token"
 
 ENVELOPES = [
     {
-        "envelopeNumber": 456,
-        "clientId": 123,
-        "status": "delivered",
-        "subject": "Contract Agreement",
-        "sentDate": "2024-01-15",
-        "recipients": ["alice@example.com"]
+        "envelopeNumber":  456,
+        "clientId":        123,
+        "status":          "delivered",
+        "createdAt":       "2024-01-15T10:00:00Z",
+        "recipientEmail":  "alice@example.com",
     },
     {
-        "envelopeNumber": 457,
-        "clientId": 123,
-        "status": "pending",
-        "subject": "NDA Document",
-        "sentDate": "2024-01-16",
-        "recipients": ["bob@example.com"]
+        "envelopeNumber":  457,
+        "clientId":        123,
+        "status":          "pending",
+        "createdAt":       "2024-01-16T10:00:00Z",
+        "recipientEmail":  "bob@example.com",
     },
     {
-        "envelopeNumber": 789,
-        "clientId": 456,
-        "status": "completed",
-        "subject": "Service Agreement",
-        "sentDate": "2024-01-17",
-        "recipients": ["charlie@example.com"]
+        "envelopeNumber":  789,
+        "clientId":        456,
+        "status":          "delivered",
+        "createdAt":       "2024-01-17T10:00:00Z",
+        "recipientEmail":  "charlie@example.com",
     },
 ]
+
+# Fields returned when includeDetails=false
+SUMMARY_FIELDS = {"envelopeNumber", "status"}
 
 
 def check_auth():
@@ -48,13 +48,19 @@ def get_envelope(client_id, envelope_number):
     err = check_auth()
     if err:
         return err
+
     envelope = next(
         (e for e in ENVELOPES if e["clientId"] == client_id and e["envelopeNumber"] == envelope_number),
-        None
+        None,
     )
-    if envelope:
+    if envelope is None:
+        return jsonify({"error": "Envelope not found"}), 404
+
+    include_details = request.args.get("includeDetails", "false").lower() == "true"
+    if include_details:
         return jsonify(envelope), 200
-    return jsonify({"error": "Envelope not found"}), 404
+    else:
+        return jsonify({k: v for k, v in envelope.items() if k in SUMMARY_FIELDS}), 200
 
 
 if __name__ == "__main__":

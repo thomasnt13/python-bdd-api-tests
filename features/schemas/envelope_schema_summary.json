@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "required": ["envelopeNumber", "status"],
+  "properties": {
+    "envelopeNumber": { "type": "integer" },
+    "status":         { "type": "string", "enum": ["delivered", "pending"] }
+  },
+  "additionalProperties": false
+}
